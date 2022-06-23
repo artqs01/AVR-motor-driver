@@ -25,13 +25,13 @@ void driver_init()
 	DDRC &= ~(1 << 0);
 }
 
-void driver_enable()
+void driver_motor_enable()
 {
 	PORTB |= (1 << L_EN);
 	PORTD |= (1 << R_EN);
 }
 
-void driver_disable()
+void driver_motor_disable()
 {
 	PORTB &= ~(1 << L_EN);
 	PORTD &= ~(1 << R_EN);
