@@ -26,8 +26,8 @@ typedef struct motor_control
 } motor_control;
 
 void driver_init();
-void driver_enable();
-void driver_disable();
+void driver_motor_enable();
+void driver_motor_disable();
 void driver_change_direction(motor_control* m_ctl);
 void driver_power_adjust(motor_control* m_ctl);
 
