@@ -3,8 +3,8 @@
 
 #include <inttypes.h>
 
-void adcenable();
-void adcdisable();
-uint16_t adcread(uint8_t mux);
+void adc_enable();
+void adc_disable();
+uint16_t adc_read(uint8_t mux);
 
 #endif

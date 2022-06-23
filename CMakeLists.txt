@@ -11,6 +11,14 @@ set(LFUSE 0xe2)
 set(HFUSE 0xd9)
 set(EFUSE 0xff)
 
+# 0xdf
+# 0xd1
+# 0xff
+
+# 0xe2 8MHz
+# 0xd9
+# 0xff
+
 add_executable(motor_driver
 	"${PROJECT_SOURCE_DIR}/src/motor_driver.c"
 	"${PROJECT_SOURCE_DIR}/src/main.c"

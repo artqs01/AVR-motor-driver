@@ -1,5 +1,5 @@
-#ifndef MOTOR_DRIVER_H
-#define MOTOR_DRIVER_H
+#ifndef UART_COM_H
+#define UART_COM_H
 
 #define BAUD_RATE 9600
 
