@@ -1,28 +1,30 @@
 #include "motor_driver.h"
+#include "adc_control.h"
 
 #include <avr/interrupt.h>
-#include <util/atomic.h>
+#include <util/delay.h>
 
 void driver_init()
 {
-	// Timer 0 set as PWM
+	// Timer 0 set as PWM and direction set as cw
 	TCCR0A = (1 << COM0A1) | (1 << WGM01) | (1 << WGM00);
 	TCCR0B =  (1 << CS01);
 	OCR0A = 0;
 	
 	// Timer 1 set as CTC to update motor velocity
 	TCCR1A = 0;
-	TCCR1B =  (1 << CS10) | (1 << CS12) | (1 << WGM12);
+	TCCR1B = (1 << CS10) | (1 << CS12) | (1 << WGM12);
 	OCR1A = 200;
 	TIMSK1 = (1 << OCIE1A);
 
 	// driver outputs and inputs
-	DDRD |= (1 << R_EN) | (1 << PWM);
+	DDRD |= (1 << R_EN) | (1 << R_PWM) | (1 << L_PWM) | (1 << DIR_SW);
 	DDRB |= (1 << L_EN);
 	DDRB &= ~((1 << L_IS) | (1 << R_IS));
 
 	DDRC &= ~(1 << 0);
 }
+
 void driver_enable()
 {
 	PORTB |= (1 << L_EN);
@@ -35,14 +37,37 @@ void driver_disable()
 	PORTD &= ~(1 << R_EN);
 }
 
+void driver_change_direction(motor_control* m_ctl)
+{
+	m_ctl->if_ccw ^= 1;
+	adc_disable();
+	m_ctl->pwr = 0;
+	*m_ctl->control_register = 0;
+	_delay_ms(4000);
+	if (m_ctl->if_ccw)
+	{
+		TCCR0A &= ~(1 << COM0A1);
+		TCCR0A |= (1 << COM0B1);
+		m_ctl->control_register = &OCR0B;
+	}
+	else
+	{
+		TCCR0A &= ~(1 << COM0B1);
+		TCCR0A |= (1 << COM0A1);
+		m_ctl->control_register = &OCR0A;
+	}
+	adc_enable();
+}
+
 void driver_power_adjust(motor_control* m_ctl)
 {
 	if (++m_ctl->adjust_pwr_cnt == PCT)
 	{
-		if (OCR0A < m_ctl->pwr)
-			OCR0A += 1;
-		else if (OCR0A > m_ctl->pwr)
-			OCR0A -= 1;
+		if (*m_ctl->control_register < m_ctl->pwr)
+			*m_ctl->control_register += 1;
+		else if (*m_ctl->control_register > m_ctl->pwr)
+			*m_ctl->control_register -= 1;
 		m_ctl->adjust_pwr_cnt = 0;
 	}
+	//*m_ctl->control_register = m_ctl->pwr;
 }
