@@ -15,7 +15,7 @@
 
 #define DIR_SW (!!(PIND & (1 << 2)))
 
-#define PCT 10
+#define PCT 5
 
 typedef struct motor_control
 {
@@ -30,5 +30,6 @@ void driver_motor_enable();
 void driver_motor_disable();
 void driver_change_direction(motor_control* m_ctl);
 void driver_power_adjust(motor_control* m_ctl);
+void driver_rpm_update(uint16_t* rpm, const motor_control* m_ctl);
 
 #endif

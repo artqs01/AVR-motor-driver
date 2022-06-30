@@ -2,7 +2,6 @@
 
 #include <stdarg.h>
 #include <stdio.h>
-
 #include<avr/io.h>
 
 void uart_init()
@@ -27,12 +26,10 @@ void uart_puts(const char* str)
 void uart_printf(const char *format, ...)
 {
 	char buffer[16];
-
 	va_list ap;
 	va_start(ap, format);
 	vsnprintf(buffer, sizeof(buffer), format, ap);
 	va_end(ap);
-
 	uart_puts(buffer);
 }
 

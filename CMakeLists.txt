@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.3)
 
 set(CMAKE_C_COMPILER "/usr/bin/avr-gcc")
 set(CMAKE_C_STANDARD 17)
-set(F_CPU 20000000UL)
+set(F_CPU 8000000UL)
 set(MCU "atmega328p")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -O3 -mmcu=${MCU} -DF_CPU=${F_CPU} -flto")
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS)
@@ -23,7 +23,7 @@ add_executable(motor_driver
 	"${PROJECT_SOURCE_DIR}/src/motor_driver.c"
 	"${PROJECT_SOURCE_DIR}/src/main.c"
 	"${PROJECT_SOURCE_DIR}/src/uart_com.c"
-	"${PROJECT_SOURCE_DIR}/src/adc_control.c"
+	"${PROJECT_SOURCE_DIR}/src/adc_control.c"	
 )
 
 target_link_libraries(motor_driver)

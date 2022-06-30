@@ -1,5 +1,6 @@
 #include "motor_driver.h"
 #include "adc_control.h"
+#include "uart_com.h"
 
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -43,7 +44,7 @@ void driver_change_direction(motor_control* m_ctl)
 	adc_disable();
 	m_ctl->pwr = 0;
 	*m_ctl->control_register = 0;
-	_delay_ms(4000);
+	_delay_ms(2000);
 	if (m_ctl->if_ccw)
 	{
 		TCCR0A &= ~(1 << COM0A1);
@@ -69,5 +70,9 @@ void driver_power_adjust(motor_control* m_ctl)
 			*m_ctl->control_register -= 1;
 		m_ctl->adjust_pwr_cnt = 0;
 	}
-	//*m_ctl->control_register = m_ctl->pwr;
+}
+
+void driver_rpm_update(uint16_t* rpm, const motor_control* m_ctl)
+{
+	*rpm = 2750.f * (float)*m_ctl->control_register / 10.26f / 255.f;
 }
