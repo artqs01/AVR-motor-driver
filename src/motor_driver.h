@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-//port b
+// port b
 #define L_EN 1
 #define R_IS 0
 #define L_IS 2

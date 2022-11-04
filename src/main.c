@@ -1,8 +1,6 @@
 #include "motor_driver.h"
 #include "uart_com.h"
 #include "adc_control.h"
-// #include "LCD_I2C.h"
-// #include "i2c.h"
 
 #include <avr/io.h>
 #include <avr/fuse.h>
@@ -11,10 +9,22 @@
 #include <util/delay.h>
 
 volatile uint8_t adc_read_flag = 0;
+volatile uint8_t print_flag = 0;
 
 ISR(TIMER1_COMPA_vect)
 {
 	adc_read_flag = 1;
+	print_flag = 1;
+}
+
+void print_motor_data(uint16_t rpm, uint8_t if_ccw)
+{
+	if (rpm < 10)
+		uart_printf("  %d,%c", rpm, (if_ccw) ? 'L' : 'R');
+	else if (rpm > 100)
+		uart_printf("%d,%c", rpm, (if_ccw) ? 'L' : 'R');
+	else
+	 uart_printf(" %d,%c", rpm, (if_ccw) ? 'L' : 'R');
 }
 
 int main()
@@ -22,11 +32,6 @@ int main()
 	driver_init();
 	uart_init();
 	adc_enable();
-
-	// i2c_init();
-	// i2c_start();
-	// i2c_write(0x70);
-	// lcd_init();
 
 	sei();
 	
@@ -47,8 +52,9 @@ int main()
 			driver_power_adjust(&m_ctl);
 			driver_rpm_update(&rpm, &m_ctl);
 		}
-		uart_printf("%d\n", rpm);
-		// lcd_cmd(0x80);
-		// lcd_msg("dupa");
+		if (print_flag) {
+			print_flag = 0;
+			print_motor_data(rpm, m_ctl.if_ccw);
+		}
 	}
 }

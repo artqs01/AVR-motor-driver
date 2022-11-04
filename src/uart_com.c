@@ -32,4 +32,3 @@ void uart_printf(const char *format, ...)
 	va_end(ap);
 	uart_puts(buffer);
 }
-

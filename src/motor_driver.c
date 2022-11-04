@@ -12,7 +12,7 @@ void driver_init()
 	TCCR0B =  (1 << CS01);
 	OCR0A = 0;
 	
-	// Timer 1 set as CTC to update motor velocity
+	// Timer 1 set as CTC to update motor power
 	TCCR1A = 0;
 	TCCR1B = (1 << CS10) | (1 << CS12) | (1 << WGM12);
 	OCR1A = 200;
